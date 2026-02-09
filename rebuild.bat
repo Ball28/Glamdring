@@ -5,7 +5,6 @@ echo ===================================================
 
 pip install pyinstaller pywin32
 pip install -r requirements.txt 
-pyinstaller --onefile --add-data "backend/config.py;backend" --hidden-import=config malware_analyzer.py
 python build_exe.py
 
 echo.
