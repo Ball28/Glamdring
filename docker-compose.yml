@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  glamdring:
+    build: .
+    container_name: glamdring
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist data (database, samples, rules)
+      - glamdring_data:/root/.malware-analyzer
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    stop_signal: SIGINT
+
+volumes:
+  glamdring_data:

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+  <!-- Blade (Tip) -->
+  <path d="M12 2 L9 6 H15 L12 2 Z" class="text-primary-500" fill="currentColor"/>
+  <!-- Blade (Body) -->
+  <path d="M10 6 H14 V16 H10 V6 Z" class="text-primary-400" fill="currentColor" opacity="0.8"/>
+  <!-- Guard -->
+  <path d="M6 16 H18 V18 H6 V16 Z" class="text-gray-300" fill="currentColor"/>
+  <!-- Hilt -->
+  <path d="M11 18 H13 V22 H11 V18 Z" class="text-gray-500" fill="currentColor"/>
+</svg>

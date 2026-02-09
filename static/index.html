@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glamdring</title>
+    <link rel="icon" type="image/svg+xml" href="/static/sword.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            950: '#0a0a0f',
+                            900: '#13131a',
+                            800: '#1e1e2a',
+                            700: '#2a2a3c',
+                        },
+                        primary: {
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        },
+                        success: { 500: '#22c55e' },
+                        error: { 500: '#ef4444' },
+                        warning: { 500: '#f59e0b' },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #0a0a0f, #13131a, #0a0a0f);
+            min-height: 100vh;
+        }
+    </style>
+</head>
+
+<body class="text-gray-100">
+    <!-- Header -->
+    <header class="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center gap-3">
+                <!-- Sword Icon -->
+                <svg class="w-8 h-8 text-primary-500" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2 L9 6 H15 L12 2 Z"/>
+                    <path d="M10 6 H14 V16 H10 V6 Z" opacity="0.8"/>
+                    <path d="M6 16 H18 V18 H6 V16 Z" class="text-gray-300"/>
+                    <path d="M11 18 H13 V22 H11 V18 Z" class="text-gray-500"/>
+                </svg>
+                <h1 class="text-2xl font-bold text-white">Glamdring</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="app" class="max-w-7xl mx-auto px-6 py-12">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-white mb-2">Welcome to Glamdring</h2>
+                <p class="text-gray-400">Lightweight standalone malware analysis tool</p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <button onclick="showUpload()"
+                    class="group p-8 rounded-xl bg-gradient-to-br from-primary-500/10 to-primary-600/5 border border-primary-500/20 hover:border-primary-500/40 transition-all duration-300 text-left">
+                    <svg class="w-12 h-12 text-primary-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <h3 class="text-2xl font-semibold text-white mb-2">Upload Sample</h3>
+                    <p class="text-gray-400">Upload a file for static analysis</p>
+                </button>
+
+                <button onclick="showSamples()"
+                    class="group p-8 rounded-xl bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 text-left">
+                    <svg class="w-12 h-12 text-purple-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3 class="text-2xl font-semibold text-white mb-2">View Samples</h3>
+                    <p class="text-gray-400">Browse uploaded samples and results</p>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 rounded-xl bg-gray-900/50 border border-gray-800">
+                    <div class="text-3xl font-bold text-white mb-1" id="sample-count">0</div>
+                    <div class="text-sm text-gray-400">Samples Analyzed</div>
+                </div>
+                <div class="p-6 rounded-xl bg-gray-900/50 border border-gray-800">
+                    <div class="text-3xl font-bold text-white mb-1">SQLite</div>
+                    <div class="text-sm text-gray-400">Local Database</div>
+                </div>
+                <div class="p-6 rounded-xl bg-gray-900/50 border border-gray-800">
+                    <div class="text-3xl font-bold text-white mb-1">Standalone</div>
+                    <div class="text-sm text-gray-400">No Login Required</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Screen -->
+        <div id="upload-screen" class="hidden">
+            <button onclick="showWelcome()"
+                class="mb-6 text-gray-400 hover:text-white transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Dashboard
+            </button>
+
+            <h2 class="text-3xl font-bold text-white mb-2">Upload Sample</h2>
+            <p class="text-gray-400 mb-8">Upload a file for malware analysis</p>
+
+            <div class="border-2 border-dashed border-gray-700 rounded-xl p-12 text-center bg-gray-900/30">
+                <input type="file" id="fileInput" class="hidden" onchange="handleFileSelect(event)"
+                    accept=".exe,.dll,.sys,.pdf,.doc,.docx,.zip,.rar,.bin">
+                <svg class="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <div id="file-display">
+                    <p class="text-white font-semibold mb-1">Drag and drop your file here</p>
+                    <p class="text-gray-400 text-sm mb-4">or</p>
+                    <button onclick="document.getElementById('fileInput').click()"
+                        class="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
+                        Browse Files
+                    </button>
+                    <p class="text-gray-500 text-xs mt-4">Supported: .exe, .dll, .sys, .pdf, .doc, .zip, .rar, .bin (Max
+                        100MB)</p>
+                </div>
+            </div>
+
+            <button id="upload-btn" onclick="uploadFile()"
+                class="hidden w-full mt-6 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:from-primary-700 hover:to-primary-800 transition">
+                Upload and Analyze
+            </button>
+        </div>
+
+        <!-- Samples List -->
+        <div id="samples-screen" class="hidden">
+            <button onclick="showWelcome()"
+                class="mb-6 text-gray-400 hover:text-white transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Dashboard
+            </button>
+
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-2">Sample Library</h2>
+                    <p class="text-gray-400">View and manage uploaded samples</p>
+                </div>
+                <button onclick="showUpload()"
+                    class="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
+                    Upload New Sample
+                </button>
+            </div>
+
+            <div id="samples-list">
+                <div class="text-center py-12">
+                    <div
+                        class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent">
+                    </div>
+                    <p class="text-gray-400 mt-4">Loading samples...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Results -->
+        <div id="analysis-screen" class="hidden">
+            <button onclick="showSamples()"
+                class="mb-6 text-gray-400 hover:text-white transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Samples
+            </button>
+
+            <div id="analysis-content"></div>
+        </div>
+    </main>
+
+    <script>
+        let selectedFile = null;
+
+        function showWelcome() {
+            document.querySelectorAll('[id$="-screen"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById('welcome-screen').classList.remove('hidden');
+            loadSampleCount();
+        }
+
+        function showUpload() {
+            document.querySelectorAll('[id$="-screen"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById('upload-screen').classList.remove('hidden');
+        }
+
+        function showSamples() {
+            document.querySelectorAll('[id$="-screen"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById('samples-screen').classList.remove('hidden');
+            loadSamples();
+        }
+
+        function showAnalysis(id) {
+            document.querySelectorAll('[id$="-screen"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById('analysis-screen').classList.remove('hidden');
+            loadAnalysis(id);
+        }
+
+        const defaultUploadHTML = `
+            <p class="text-white font-semibold mb-1">Drag and drop your file here</p>
+            <p class="text-gray-400 text-sm mb-4">or</p>
+            <button onclick="document.getElementById('fileInput').click()" 
+                class="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
+                Browse Files
+            </button>
+            <p class="text-gray-500 text-xs mt-4">Supported: .exe, .dll, .sys, .pdf, .doc, .zip, .rar, .bin (Max 100MB)</p>
+        `;
+
+        function handleFileSelect(event) {
+            selectedFile = event.target.files[0];
+            if (selectedFile) {
+                const sizeMB = (selectedFile.size / 1024 / 1024).toFixed(2);
+                document.getElementById('file-display').innerHTML = `
+                    <p class="text-white font-semibold text-lg">${selectedFile.name}</p>
+                    <p class="text-gray-400 text-sm">${sizeMB} MB</p>
+                    <button onclick="resetUpload()" class="mt-4 text-gray-400 hover:text-white text-sm underline">
+                        Remove file
+                    </button>
+                `;
+                document.getElementById('upload-btn').classList.remove('hidden');
+            }
+        }
+
+        function resetUpload() {
+            selectedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('file-display').innerHTML = defaultUploadHTML;
+            document.getElementById('upload-btn').classList.add('hidden');
+        }
+
+        async function uploadFile() {
+            if (!selectedFile) return;
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            const btn = document.getElementById('upload-btn');
+            btn.textContent = 'Uploading...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/samples/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('✅ File uploaded successfully!');
+                    showSamples();
+                } else {
+                    alert('❌ Upload failed: ' + (data.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('❌ Upload failed: ' + error.message);
+            } finally {
+                btn.textContent = 'Upload and Analyze';
+                btn.disabled = false;
+                selectedFile = null;
+                document.getElementById('fileInput').value = '';
+            }
+        }
+
+        async function loadSampleCount() {
+            try {
+                const response = await fetch('/api/samples');
+                const data = await response.json();
+                document.getElementById('sample-count').textContent = data.total || 0;
+            } catch (error) {
+                console.error('Failed to load sample count:', error);
+            }
+        }
+
+        async function loadSamples() {
+            try {
+                const response = await fetch('/api/samples');
+                const data = await response.json();
+
+                const listEl = document.getElementById('samples-list');
+
+                if (data.samples.length === 0) {
+                    listEl.innerHTML = `
+                        <div class="text-center py-12 px-6 rounded-xl bg-gray-900/30 border border-gray-800">
+                            <svg class="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <h3 class="text-xl font-semibold text-white mb-2">No samples yet</h3>
+                            <p class="text-gray-400 mb-6">Upload your first file to get started</p>
+                            <button onclick="showUpload()" class="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
+                                Upload Sample
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    listEl.innerHTML = data.samples.map(s => `
+                        <div class="p-6 rounded-xl bg-gray-900/30 border border-gray-800 hover:border-gray-700 transition mb-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-white mb-1">${s.filename}</h3>
+                                    <div class="flex gap-6 text-sm text-gray-400">
+                                        <span>SHA256: ${s.sha256.substring(0, 16)}...</span>
+                                        <span>Size: ${(s.file_size / 1024).toFixed(2)} KB</span>
+                                        <span>Uploaded: ${new Date(s.uploaded_at).toLocaleString()}</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="analyzeSample(${s.id})" class="p-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition" title="Analyze">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </button>
+                                    <button onclick="deleteSample(${s.id})" class="p-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition" title="Delete">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Failed to load samples:', error);
+                document.getElementById('samples-list').innerHTML = '<p class="text-red-500">Failed to load samples</p>';
+            }
+        }
+
+        async function analyzeSample(id) {
+            try {
+                const response = await fetch(`/api/analysis/${id}/start`, { method: 'POST' });
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAnalysis(data.analysis_id);
+                } else {
+                    alert('❌ Analysis failed: ' + (data.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('❌ Analysis failed: ' + error.message);
+            }
+        }
+
+        async function deleteSample(id) {
+            if (!confirm('Are you sure you want to delete this sample?')) return;
+
+            try {
+                const response = await fetch(`/api/samples/${id}`, { method: 'DELETE' });
+
+                if (response.ok) {
+                    loadSamples();
+                } else {
+                    alert('❌ Delete failed');
+                }
+            } catch (error) {
+                alert('❌ Delete failed: ' + error.message);
+            }
+        }
+
+        async function loadAnalysis(id) {
+            const contentEl = document.getElementById('analysis-content');
+            contentEl.innerHTML = `
+                <div class="text-center py-12">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"></div>
+                    <p class="text-gray-400 mt-4">Running analysis...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`/api/analysis/${id}`);
+                const analysis = await response.json();
+
+                if (analysis.status === 'running' || analysis.status === 'pending') {
+                    setTimeout(() => loadAnalysis(id), 2000);
+                    return;
+                }
+
+                const threatColor = analysis.threat_score >= 70 ? 'bg-red-500' :
+                    analysis.threat_score >= 40 ? 'bg-yellow-500' : 'bg-green-500';
+
+                const threatLabel = analysis.threat_score >= 70 ? 'High Risk' :
+                    analysis.threat_score >= 40 ? 'Medium Risk' : 'Low Risk';
+
+                let html = `
+                    <div class="p-6 rounded-xl bg-gray-900/50 border border-gray-800 mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white">Analysis #${analysis.id}</h2>
+                                <p class="text-gray-400 text-sm mt-1">
+                                    Status: <span class="capitalize text-white">${analysis.status}</span>
+                                </p>
+                            </div>
+                            <div class="flex gap-3">
+                                <button onclick="checkVirusTotal(${analysis.sample_id})" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                    </svg>
+                                    Check VirusTotal
+                                </button>
+                                <span class="px-3 py-1 rounded-full text-sm font-semibold ${threatColor} text-white h-fit">${threatLabel}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="flex-1">
+                                <div class="h-4 bg-gray-700 rounded-full overflow-hidden">
+                                    <div class="${threatColor} h-full transition-all duration-500" style="width: ${analysis.threat_score}%"></div>
+                                </div>
+                            </div>
+                            <span class="text-white font-semibold">${analysis.threat_score}/100</span>
+                        </div>
+                    </div>
+
+                    <!-- VirusTotal Results -->
+                    ${analysis.virustotal_results ? renderVTResults(analysis.virustotal_results) : ''}
+                    
+                    <!-- YARA Results -->
+                    ${analysis.static_results && analysis.static_results.yara ? renderYaraResults(analysis.static_results.yara) : ''}
+                `;
+
+                if (analysis.static_results) {
+                    const sr = analysis.static_results;
+
+                    // Hashes
+                    if (sr.hashes) {
+                        html += `<div class="p-6 rounded-xl bg-gray-900/30 border border-gray-800 mb-6">
+                            <h3 class="text-xl font-semibold text-white mb-4">File Hashes</h3>
+                            <div class="space-y-3">
+                                ${Object.entries(sr.hashes).map(([algo, hash]) => `
+                                    <div class="flex items-center gap-4">
+                                        <span class="text-gray-400 uppercase w-16">${algo}:</span>
+                                        <code class="flex-1 text-sm text-gray-300 bg-gray-950 p-2 rounded font-mono">${hash}</code>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>`;
+                    }
+
+                    // File Info & Entropy
+                    html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">';
+
+                    if (sr.file_info) {
+                        html += `<div class="p-6 rounded-xl bg-gray-900/30 border border-gray-800">
+                            <h3 class="text-xl font-semibold text-white mb-4">File Information</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between"><span class="text-gray-400">Size:</span><span class="text-white">${sr.file_info.size_kb} KB</span></div>
+                                ${sr.file_type ? `<div class="flex justify-between"><span class="text-gray-400">Type:</span><span class="text-white">${sr.file_type.description}</span></div>` : ''}
+                            </div>
+                        </div>`;
+                    }
+
+                    if (sr.entropy) {
+                        html += `<div class="p-6 rounded-xl bg-gray-900/30 border border-gray-800">
+                            <h3 class="text-xl font-semibold text-white mb-4">Entropy Analysis</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between"><span class="text-gray-400">Entropy:</span><span class="text-white font-mono">${sr.entropy.entropy} / 8.0</span></div>
+                                <div class="flex justify-between"><span class="text-gray-400">Verdict:</span><span class="text-white text-sm">${sr.entropy.verdict}</span></div>
+                            </div>
+                        </div>`;
+                    }
+
+                    html += '</div>';
+
+                    // Interesting Strings
+                    if (sr.strings?.interesting) {
+                        html += `<div class="p-6 rounded-xl bg-gray-900/30 border border-gray-800 mb-6">
+                            <h3 class="text-xl font-semibold text-white mb-4">Interesting Strings Detected</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+
+                        for (const [category, items] of Object.entries(sr.strings.interesting)) {
+                            if (items.length > 0) {
+                                html += `<div>
+                                    <h4 class="text-sm font-semibold text-gray-400 uppercase mb-2">${category.replace('_', ' ')} (${items.length})</h4>
+                                    <div class="space-y-1 max-h-40 overflow-y-auto">
+                                        ${items.map(item => `<div class="text-sm text-gray-300 bg-gray-950 p-2 rounded font-mono break-all">${item}</div>`).join('')}
+                                    </div>
+                                </div>`;
+                            }
+                        }
+
+                        html += '</div></div>';
+                    }
+
+                    // PE Analysis
+                    if (sr.pe_info) {
+                        const pe = sr.pe_info;
+                        html += `<div class="p-6 rounded-xl bg-gray-900/30 border border-gray-800 mb-6">
+                            <h3 class="text-xl font-semibold text-white mb-4">PE Analysis</h3>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><span class="text-gray-400">Entry Point:</span> <span class="text-white font-mono">${pe.entry_point || 'N/A'}</span></div>
+                                    <div><span class="text-gray-400">Image Base:</span> <span class="text-white font-mono">${pe.image_base || 'N/A'}</span></div>
+                                    <div><span class="text-gray-400">Subsystem:</span> <span class="text-white">${pe.subsystem || 'N/A'}</span></div>
+                                    <div><span class="text-gray-400">Compile Time:</span> <span class="text-white">${pe.compile_time ? new Date(pe.compile_time * 1000).toLocaleString() : 'N/A'}</span></div>
+                                </div>
+
+                                ${pe.sections && pe.sections.length > 0 ? `
+                                <h4 class="text-lg font-semibold text-white mt-6 mb-3">Sections</h4>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-700">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Virtual Size</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Raw Size</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Entropy</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Flags</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-800">
+                                            ${pe.sections.map(section => `
+                                            <tr>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-white">${section.name}</td>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-300">${section.virtual_size}</td>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-300">${section.raw_size}</td>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-300">${section.entropy.toFixed(2)}</td>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-300">${section.flags.join(', ')}</td>
+                                            </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                ` : ''}
+
+                                ${pe.imports && Object.keys(pe.imports).length > 0 ? `
+                                <h4 class="text-lg font-semibold text-white mt-6 mb-3">Imports</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    ${Object.entries(pe.imports).map(([dll, functions]) => `
+                                    <div>
+                                        <h5 class="text-md font-semibold text-gray-300 mb-2">${dll}</h5>
+                                        <div class="space-y-1 max-h-40 overflow-y-auto bg-gray-950 p-3 rounded">
+                                            ${functions.map(func => `
+                                                <div class="text-sm font-mono ${isSuspiciousImport(func) ? 'text-red-400' : 'text-gray-300'}">${func}</div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    `).join('')}
+                                </div>
+                                ` : ''}
+
+                                ${pe.exports && pe.exports.length > 0 ? `
+                                <h4 class="text-lg font-semibold text-white mt-6 mb-3">Exports</h4>
+                                <div class="space-y-1 max-h-40 overflow-y-auto bg-gray-950 p-3 rounded">
+                                    ${pe.exports.map(exp => `<div class="text-sm font-mono text-gray-300">${exp}</div>`).join('')}
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>`;
+                    }
+                }
+
+                contentEl.innerHTML = html;
+            } catch (error) {
+                contentEl.innerHTML = `<p class="text-red-500">Failed to load analysis: ${error.message}</p>`;
+            }
+        }
+
+        function isSuspiciousImport(funcName) {
+            const suspicious = [
+                'LoadLibrary', 'GetProcAddress', 'VirtualAlloc', 'VirtualProtect',
+                'WriteProcessMemory', 'CreateRemoteThread', 'InternetOpen',
+                'URLDownloadToFile', 'ShellExecute', 'RegOpenKey', 'CryptEncrypt'
+            ];
+            return suspicious.some(s => funcName.toLowerCase().includes(s.toLowerCase()));
+        }
+
+        function renderVTResults(vt) {
+            if (!vt || vt.error) return '';
+
+            if (vt.found === false) {
+                return `
+                <div class="p-6 rounded-xl bg-gray-900/30 border border-gray-800 mb-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                        </svg>
+                        <h3 class="text-xl font-semibold text-white">VirusTotal Detection</h3>
+                    </div>
+                    <p class="text-gray-400">File hash not found in VirusTotal database.</p>
+                </div>`;
+            }
+
+            const detectionRate = vt.malicious > 0
+                ? vt.malicious + ' / ' + vt.total_engines
+                : 'Clean';
+
+            const detectionColor = vt.malicious > 0 ? 'text-red-500' : 'text-green-500';
+
+            let enginesHtml = '';
+            if (vt.results && Object.keys(vt.results).length > 0) {
+                const engineItems = Object.entries(vt.results).map(([engine, result]) => `
+                    <div class="flex items-center justify-between bg-gray-950 p-2 px-3 rounded text-sm">
+                        <span class="text-gray-300">${engine}</span>
+                        <span class="text-red-400 font-medium">${result.result}</span>
+                    </div>
+                `).join('');
+
+                enginesHtml = `
+                    <h4 class="text-sm font-semibold text-gray-400 uppercase mb-3">Detections</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                        ${engineItems}
+                    </div>
+                `;
+            }
+
+            return `
+            <div class="p-6 rounded-xl bg-gray-900/30 border border-gray-800 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                        </svg>
+                        <h3 class="text-xl font-semibold text-white">VirusTotal Detection</h3>
+                    </div>
+                    <a href="${vt.gui_link}" target="_blank" class="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1">
+                        View Report 
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    </a>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-gray-950 p-4 rounded-lg text-center">
+                        <div class="text-2xl font-bold ${detectionColor} mb-1">${detectionRate}</div>
+                        <div class="text-xs text-gray-500 uppercase">Detections</div>
+                    </div>
+                    <div class="bg-gray-950 p-4 rounded-lg text-center">
+                        <div class="text-2xl font-bold text-white mb-1">${vt.scan_date ? new Date(vt.scan_date).toLocaleDateString() : 'N/A'}</div>
+                        <div class="text-xs text-gray-500 uppercase">Last Scan</div>
+                    </div>
+                   <div class="bg-gray-950 p-4 rounded-lg text-center">
+                        <div class="text-2xl font-bold text-white mb-1">${vt.suspicious}</div>
+                        <div class="text-xs text-gray-500 uppercase">Suspicious</div>
+                    </div>
+                </div>
+
+                ${enginesHtml}
+            </div>
+            `;
+        }
+
+        function renderYaraResults(yara) {
+            if (!yara || (!yara.matches?.length && !yara.error)) return '';
+
+            let contentHtml = '';
+
+            if (yara.error) {
+                contentHtml = `<p class="text-red-400 mb-2">Error: ${yara.error}</p>`;
+            } else if (yara.matches.length === 0) {
+                contentHtml = '<p class="text-gray-400">No YARA rules matched.</p>';
+            } else {
+                const matchesHtml = yara.matches.map(match => `
+                    <div class="bg-gray-950 p-4 rounded-lg border border-red-900/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-red-400 font-bold font-mono">${match.rule}</span>
+                            <span class="text-xs text-gray-500 bg-gray-900 px-2 py-1 rounded">${match.namespace}</span>
+                        </div>
+                        ${match.meta && match.meta.description ? `<p class="text-gray-400 text-sm italic">"${match.meta.description}"</p>` : ''}
+                    </div>
+                `).join('');
+
+                contentHtml = `<div class="space-y-3">${matchesHtml}</div>`;
+            }
+
+            return `
+            <div class="p-6 rounded-xl bg-gray-900/30 border border-gray-800 mb-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <h3 class="text-xl font-semibold text-white">YARA Matches (${yara.matches ? yara.matches.length : 0})</h3>
+                </div>
+                ${contentHtml}
+            </div>
+            `;
+        }
+
+        // Initialize
+        loadSampleCount();
+    </script>
+</body>
+
+</html>
