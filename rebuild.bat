@@ -5,6 +5,7 @@ echo ===================================================
 pip install pyinstaller
 pip install uvicorn
 pip install pydantic
+pip install fastapi
 python build_exe.py
 
 echo.
