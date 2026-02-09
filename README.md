@@ -17,8 +17,9 @@ A lightweight, standalone malware analysis tool for local use - **no login requi
 
 ### Option 1: Standalone EXE (Windows)
 The easiest way to run Glamdring. No installation required.
+**Make sure you have Python 3.12 installed. SQLAlchemy is not currently supported by higher python versions.
 
-1.  Run rebuild.bat to build .exe (this needs to be ran everytime changes are made to rebuild your .exe)
+1.  Run rebuild.bat to build .exe (this needs to be ran one time to set up OR everytime changes are made to rebuild your .exe)
 2.  Locate **`Glamdring.exe`** in the `dist/` folder.
 3.  Double-click to run.
 4.  The console will open, and your browser will launch automatically.
