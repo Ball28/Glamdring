@@ -11,6 +11,7 @@ services:
       - glamdring_data:/root/.malware-analyzer
     environment:
       - PYTHONUNBUFFERED=1
+      - HOST=0.0.0.0
     restart: unless-stopped
     stop_signal: SIGINT
 
