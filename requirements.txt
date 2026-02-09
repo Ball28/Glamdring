@@ -6,7 +6,7 @@ pydantic==2.10.4
 pydantic-settings==2.7.0
 
 # Database (SQLite via SQLAlchemy)
-sqlalchemy==2.1.0
+sqlalchemy
 
 # File Upload
 python-multipart==0.0.6
