@@ -1,5 +1,4 @@
 # Core Framework
-python==3.12
 pyinstaller
 fastapi==0.115.0
 uvicorn[standard]==0.32.1
@@ -7,7 +6,7 @@ pydantic==2.10.4
 pydantic-settings==2.7.0
 
 # Database (SQLite via SQLAlchemy)
-sqlalchemy==2.0.23
+sqlalchemy==2.1.0
 
 # File Upload
 python-multipart==0.0.6
