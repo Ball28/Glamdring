@@ -36,7 +36,6 @@ Thumbs.db
 .coverage
 
 # Samples (security: never commit malware)
-*.exe
 *.dll
 *.bin
 
