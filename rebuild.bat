@@ -2,7 +2,7 @@
 echo ===================================================
 echo   Rebuilding Glamdring.exe... 🔨
 echo ===================================================
-pip install pyInstaller
+pip install https://github.com/pyinstaller/pyinstaller/tarball/develop
 pip install -r requirements.txt 
 
 python build_exe.py
