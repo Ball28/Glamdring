@@ -3,6 +3,8 @@ echo ===================================================
 echo   Rebuilding Glamdring.exe... 🔨
 echo ===================================================
 pip install pyinstaller
+pip install uvicorn
+pip install pydantic
 python build_exe.py
 
 echo.
