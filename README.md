@@ -18,9 +18,10 @@ A lightweight, standalone malware analysis tool for local use - **no login requi
 ### Option 1: Standalone EXE (Windows)
 The easiest way to run Glamdring. No installation required.
 
-1.  Locate **`Glamdring.exe`** in the `dist/` folder.
-2.  Double-click to run.
-3.  The console will open, and your browser will launch automatically.
+1.  Run rebuild.bat to build .exe (this needs to be ran everytime changes are made to rebuild your .exe)
+2.  Locate **`Glamdring.exe`** in the `dist/` folder.
+3.  Double-click to run.
+4.  The console will open, and your browser will launch automatically.
 
 **Note**: The first run might take a few seconds to extract temporary files.
 
