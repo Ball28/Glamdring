@@ -1,12 +1,26 @@
 import PyInstaller.__main__
 import os
 import shutil
+import time
 
-# Clean previous build
-if os.path.exists("build"):
-    shutil.rmtree("build")
-if os.path.exists("dist"):
-    shutil.rmtree("dist")
+# Clean previous build with retry logic
+def remove_readonly(func, path, _):
+    """Clear the readonly bit and reattempt the removal"""
+    os.chmod(path, 0o777)
+    func(path)
+
+def clean_build_dirs():
+    """Clean build directories with retries"""
+    for folder in ["build", "dist"]:
+        if os.path.exists(folder):
+            try:
+                shutil.rmtree(folder, onerror=remove_readonly)
+            except PermissionError:
+                print(f"⚠️  Warning: Could not delete {folder}. Please close Glamdring.exe and try again.")
+                input("Press Enter after closing the program...")
+                shutil.rmtree(folder, onerror=remove_readonly)
+
+clean_build_dirs()
 
 # PyInstaller Arguments
 args = [

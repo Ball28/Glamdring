@@ -5,7 +5,7 @@ a = Analysis(
     ['malware_analyzer.py'],
     pathex=['.'],
     binaries=[],
-    datas=[('static', 'static'), ('backend/default_rules.yar', 'backend')],
+    datas=[('static', 'static'), ('backend', 'backend')],
     hiddenimports=['uvicorn.logging', 'uvicorn.loops', 'uvicorn.loops.auto', 'uvicorn.protocols', 'uvicorn.protocols.http', 'uvicorn.protocols.http.auto', 'uvicorn.lifespan', 'uvicorn.lifespan.on', 'engineio.async_drivers.asgi', 'sqlalchemy.sql.default_comparator'],
     hookspath=[],
     hooksconfig={},
