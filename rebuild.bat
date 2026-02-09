@@ -2,7 +2,7 @@
 echo ===================================================
 echo   Rebuilding Glamdring.exe... 🔨
 echo ===================================================
-
+pip install pyinstaller
 python build_exe.py
 
 echo.
