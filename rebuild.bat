@@ -2,10 +2,9 @@
 echo ===================================================
 echo   Rebuilding Glamdring.exe... 🔨
 echo ===================================================
-pip install pyinstaller
-pip install uvicorn
-pip install pydantic
-pip install fastapi
+
+pip install -r requirements.txt 
+
 python build_exe.py
 
 echo.
