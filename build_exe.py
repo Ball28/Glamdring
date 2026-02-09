@@ -1,7 +1,6 @@
 import PyInstaller.__main__
 import os
 import shutil
-import time
 
 # Clean previous build with retry logic
 def remove_readonly(func, path, _):
@@ -39,6 +38,9 @@ args = [
     '--add-data=backend;backend',
     
     # Hidden Imports (sometimes missed by analysis)
+    '--hidden-import=pydantic_settings',
+    '--hidden-import=sqlalchemy',
+    '--hidden-import=sqlalchemy.ext.declarative',
     '--hidden-import=uvicorn.logging',
     '--hidden-import=uvicorn.loops',
     '--hidden-import=uvicorn.loops.auto',
