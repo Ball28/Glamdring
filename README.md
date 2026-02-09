@@ -229,3 +229,7 @@ Built with:
 ---
 
 **No login required - just run and analyze!** 🛡️
+
+---
+
+**Please note this is a work in progress program and in no way should be solely relied on for determining if a file is truly malware. It is intended for quick judgement and should be investigated further with other tools**
