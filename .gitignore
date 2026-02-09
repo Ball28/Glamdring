@@ -49,10 +49,7 @@ uploads/
 *.dll
 *.bin
 
-# Frontend
-node_modules/
-dist/
-.cache/
+
 
 # Docker
 *.env.prod
