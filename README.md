@@ -126,11 +126,6 @@ malware-analyzer/
 │   ├── database.py          # SQLite connection
 │   ├── config.py            # Settings
 │   └── requirements.txt     # Python dependencies
-├── frontend/
-│   └── src/
-│       ├── pages/           # React pages
-│       ├── api/             # API client
-│       └── App.tsx          # Main app
 ├── malware_analyzer.py      # One-click launcher
 └── README.md
 ```
