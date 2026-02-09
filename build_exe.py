@@ -21,8 +21,8 @@ args = [
     # Include Static Files (HTML/JS/CSS)
     '--add-data=static;static',
     
-    # Include Default Rules (if they exist in backend)
-    '--add-data=backend/default_rules.yar;backend',
+    # Include entire backend folder (includes config.py and other files)
+    '--add-data=backend;backend',
     
     # Hidden Imports (sometimes missed by analysis)
     '--hidden-import=uvicorn.logging',
